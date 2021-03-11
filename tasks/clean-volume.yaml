@@ -1,0 +1,12 @@
+kind: Task
+apiVersion: tekton.dev/v1beta1
+metadata:
+  name: clean-volume
+spec:
+  workspaces:
+  - name: output
+  steps:
+    - name: clean-volume
+      image: alpine
+      script: |
+        cd $(workspaces.output.path)/; rm -rf *; pwd; rm -rf .git*; ls -la $(workspaces.output.path)/;

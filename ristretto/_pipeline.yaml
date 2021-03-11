@@ -1,0 +1,24 @@
+kind: Pipeline
+apiVersion: tekton.dev/v1alpha1
+metadata:
+  name: pipeline-ci
+spec:
+  params:
+    - name: RepositoryURL
+      type: string
+    - name: Commit
+      type: string
+  workspaces:
+    - name: TKN_VOLUME
+  tasks:
+    - name: clone-repository
+      params:
+        - name: RepositoryURL
+          value: "$(params.RepositoryURL)"
+        - name: Commit
+          value: "$(params.Commit)"
+      taskRef:
+        name: clone-repository
+      workspaces:
+        - name: VOLUME
+          workspace: TKN_VOLUME

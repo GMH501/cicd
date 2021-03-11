@@ -1,0 +1,30 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: build-and-deploy
+spec:
+  params:
+  - name: Commit
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1alpha1
+    kind: PipelineRun
+    metadata:
+      generateName: springapp-deploy-run-
+    spec:
+      pipelineRef:
+        name: pipeline-ci
+      workspaces:
+      - name: TKN_VOLUME
+        persistentVolumeClaim:
+          claimName: test-pvc1
+    spec:
+      pipelineSpec:
+        tasks:
+        - name: clone-repository
+          taskRef:
+            name: clone-repository
+          params:
+            - name: "RepositoryURL"
+              value: "https://github.com/GMH501/redexporter.git"
+            - name: "Commit"
+              value: "$(tt.params.Commit)"

@@ -1,0 +1,5 @@
+{
+	  "action"      : "deploy_from_scratch_with_bundle",
+	    "pusher"      : { "email" : "my@email.com" },
+	      "ref"         : "refs/heads/master"
+}

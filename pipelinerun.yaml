@@ -1,0 +1,43 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: springapp-deploy-run-02
+  labels:
+    tekton.dev/pipeline: pipeline-test
+spec:
+  pipelineRef:
+    name: pipeline-test
+  resources:
+  - name: github-repo
+    resourceSpec:
+      type: git
+      params:
+        - name: revision
+          value: master
+        - name: url
+          value: https://github.com/gmh501/spring-app
+      # - name: httpProxy
+      #   value: <your HTTP Proxy server>
+      # - name: httpsProxy
+      #   value: <your HTTPS Proxy server>
+      # - name: noProxy
+      #   value: <no proxy server>
+  workspaces:
+  - name: test
+    persistentVolumeClaim:
+      claimName: test-pvc1
+  params:
+    - name: "SONAR_PROJECT"
+      value: "spring-app"
+    - name: "SONAR_URL"
+      value: "http://sonarqube-devops.apps.cluster-c601.c601.sandbox1743.opentlc.com"
+    - name: "SONAR_TOKEN"
+      value: "3df03f79cc2e432ca65948a260687d6f3d6b3c0a"
+    - name: BUILD_REGISTRY_URL
+      value: image-registry.openshift-image-registry.svc:5000/test03/springapp
+    - name: "BUILD_TLSVERIFY"
+      value: "false"
+    - name: "BUILD_IMAGE"
+      value: "springapp"
+    - name: risultato
+      value: "test"

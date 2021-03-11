@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-repository
+spec:
+  workspaces:
+  - name: VOLUME
+  params:
+  - name: RepositoryURL
+    type: string
+    description: Url of the git repository to clone.
+    default: https://github.com/GMH501/redexporter.git
+  steps:
+  - name: git-clone
+    image: alpine/git:latest
+    script: |
+      git clone "$(params.RepositoryURL)" $(workspaces.VOLUME.path)/codebase
+  - name: print-commit
+    image: alpine/git:latest
+    script: |
+      cd codebase && git rev-parse HEAD

@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: nexus-deploy
+spec:
+  workspaces:
+  - name: output
+  steps:
+    - name: nexus-deploy
+      image: maven
+      script: |
+        cd  $(workspaces.output.path)
+        mvn deploy -s settings.xml | tee $(workspaces.output.path)/deploy-nexus
+        exit ${PIPESTATUS[0]}

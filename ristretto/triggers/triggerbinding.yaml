@@ -1,0 +1,97 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: build-and-deploy
+spec:
+  params:
+  - name: Commit
+    value: $(body.extensions.commit)
+
+## GOGS WEBHOOK HEADERS AND PAYLOAD
+##
+## Request URL: http://el-buid-and-deploy-cicd.apps-crc.testing/
+## Request method: POST
+## Content-Type: application/json
+## X-Github-Delivery: 74f474f0-0e96-4ceb-9eed-b4fd4631b967
+## X-Github-Event: push
+## X-Gogs-Delivery: 74f474f0-0e96-4ceb-9eed-b4fd4631b967
+## X-Gogs-Event: push
+## X-Gogs-Signature: 
+## 
+## 
+## {
+##   "ref": "refs/heads/master",
+##   "before": "55c55dbcbae6e4627e9496519b2f5bbdbcc24772",
+##   "after": "55c55dbcbae6e4627e9496519b2f5bbdbcc24772",
+##   "compare_url": "",
+##   "commits": [
+##     {
+##       "id": "55c55dbcbae6e4627e9496519b2f5bbdbcc24772",
+##       "message": "Initial commit\n",
+##       "url": "http://gogs-cicd.apps-crc.testing/gogs/test/commit/55c55dbcbae6e4627e9496519b2f5bbdbcc24772",
+##       "author": {
+##         "name": "gogs",
+##         "email": "gogs@gogs.com",
+##         "username": "gogs"
+##       },
+##       "committer": {
+##         "name": "Gogs",
+##         "email": "gogs@fake.local",
+##         "username": ""
+##       },
+##       "added": [
+##         "README.md"
+##       ],
+##       "removed": null,
+##       "modified": null,
+##       "timestamp": "0001-01-01T00:00:00Z"
+##     }
+##   ],
+##   "repository": {
+##     "id": 2,
+##     "owner": {
+##       "id": 1,
+##       "username": "gogs",
+##       "login": "gogs",
+##       "full_name": "",
+##       "email": "gogs@gogs.com",
+##       "avatar_url": "https://secure.gravatar.com/avatar/715cb4680284423d81d2e75e94f812a1?d=identicon"
+##     },
+##     "name": "test",
+##     "full_name": "gogs/test",
+##     "description": "",
+##     "private": false,
+##     "fork": false,
+##     "parent": null,
+##     "empty": false,
+##     "mirror": false,
+##     "size": 0,
+##     "html_url": "http://gogs-cicd.apps-crc.testing/gogs/test",
+##     "ssh_url": "git@localhost:gogs/test.git",
+##     "clone_url": "http://gogs-cicd.apps-crc.testing/gogs/test.git",
+##     "website": "",
+##     "stars_count": 0,
+##     "forks_count": 0,
+##     "watchers_count": 1,
+##     "open_issues_count": 0,
+##     "default_branch": "master",
+##     "created_at": "2020-11-08T17:30:52Z",
+##     "updated_at": "2020-11-08T17:30:52Z"
+##   },
+##   "pusher": {
+##     "id": 1,
+##     "username": "gogs",
+##     "login": "gogs",
+##     "full_name": "",
+##     "email": "gogs@gogs.com",
+##     "avatar_url": "https://secure.gravatar.com/avatar/715cb4680284423d81d2e75e94f812a1?d=identicon"
+##   },
+##   "sender": {
+##     "id": 1,
+##     "username": "gogs",
+##     "login": "gogs",
+##     "full_name": "",
+##     "email": "gogs@gogs.com",
+##     "avatar_url": "https://secure.gravatar.com/avatar/715cb4680284423d81d2e75e94f812a1?d=identicon"
+##   }
+## }

@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: deploy-app
+spec:
+  workspaces:
+  - name: output
+  params:
+  - name: IMAGE
+    type: string
+  steps:
+    - name: patch
+      image: quay.io/openshift/origin-cli:latest
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          oc new-app $(params.IMAGE) && oc expose service/$(params.IMAGE) | tee $(workspaces.output.path)/deploy-oc
+          exit ${PIPESTATUS[0]}

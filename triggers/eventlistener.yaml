@@ -1,0 +1,11 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: build-and-deploy
+spec:
+  serviceAccountName: tekton
+  triggers:
+  - bindings:
+    - name: build-and-deploy
+    template:
+      name: build-and-deploy

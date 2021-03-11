@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: sonar-analysis
+spec:
+  params:
+  - name: PROJECT
+    type: string
+  - name: URL
+    type: string
+  - name: TOKEN
+    type: string
+  workspaces:
+  - name: output
+  steps:
+    - name: sonar-analysis
+      image: maven
+      script: |
+        cd $(workspaces.output.path)/
+        mvn sonar:sonar \
+           -Dsonar.projectKey=$(params.PROJECT) \
+           -Dsonar.host.url=$(params.URL) \
+           -Dsonar.login=$(params.TOKEN) | tee $(workspaces.output.path)/sonar
+        exit ${PIPESTATUS[0]}

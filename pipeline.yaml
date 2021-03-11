@@ -1,0 +1,93 @@
+kind: Pipeline
+apiVersion: tekton.dev/v1alpha1
+metadata:
+  name: pipeline-test
+spec:
+  params:
+    - name: SONAR_PROJECT
+      type: string
+    - name: SONAR_URL
+      type: string
+    - name: SONAR_TOKEN
+      type: string
+    - name: BUILD_TLSVERIFY
+      type: string
+    - name: BUILD_IMAGE
+      type: string
+    - name: BUILD_REGISTRY_URL
+      type: string
+    - name: risultato
+      type: string
+  workspaces:
+    - name: test
+  resources:
+    - name: github-repo
+      type: git
+  tasks:
+    - name: clean-volume
+      taskRef:
+        name: clean-volume
+      workspaces:
+        - name: output
+          workspace: test
+    - name: clone-repository
+      runAfter:
+      - clean-volume
+      taskRef:
+        name: clone-repo
+      workspaces:
+        - name: output
+          workspace: test
+      resources:
+        inputs:
+          - name: github-repo
+            resource: github-repo
+    - name: sonar-analysis
+      params:
+        - name: PROJECT
+          value: "$(params.SONAR_PROJECT)"
+        - name: URL
+          value: "$(params.SONAR_URL)"
+        - name: TOKEN
+          value: "$(params.SONAR_TOKEN)"
+      runAfter:
+      - clone-repository
+      taskRef:
+        name: sonar-analysis
+      workspaces:
+        - name: output
+          workspace: test
+    - name: nexus-deploy
+      runAfter:
+      - sonar-analysis
+      taskRef:
+        name: nexus-deploy
+      workspaces:
+        - name: output
+          workspace: test
+    - name: build-image
+      runAfter:
+      - nexus-deploy
+      taskRef:
+        name: buildah
+      workspaces:
+        - name: output
+          workspace: test
+      params:
+      - name: TLSVERIFY
+        value: "$(params.BUILD_TLSVERIFY)"
+      - name: REGISTRY_URL
+        value: "$(params.BUILD_REGISTRY_URL)"
+      - name: IMAGE
+        value: "$(params.BUILD_IMAGE)"
+    - name: deploy-app
+      runAfter:
+      - build-image
+      taskRef:
+        name: deploy-app
+      workspaces:
+        - name: output
+          workspace: test
+      params:
+      - name: IMAGE
+        value: "$(params.BUILD_IMAGE)"
